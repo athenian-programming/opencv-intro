@@ -6,7 +6,8 @@ import imutils
 import camera
 import opencv_utils as utils
 
-if __name__ == "__main__":
+
+def main():
     cam = camera.Camera()
     try:
         cnt = 0
@@ -19,9 +20,14 @@ if __name__ == "__main__":
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-            text = 'Frame #: {0}'.format(cnt)
-            cv2.putText(frame, text, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, (.55 if utils.is_raspi() else .75), utils.RED,
-                        2)
+            text = 'Frame #: {}'.format(cnt)
+            cv2.putText(img=frame,
+                        text=text,
+                        org=(10, 25),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=(.55 if utils.is_raspi() else .75),
+                        color=utils.RED,
+                        thickness=2)
 
             # Display images
             cv2.imshow('Flipped', flipped)
@@ -43,3 +49,7 @@ if __name__ == "__main__":
         cv2.destroyAllWindows()
         if cam.is_open():
             cam.close()
+
+
+if __name__ == "__main__":
+    main()
