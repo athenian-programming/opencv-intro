@@ -9,15 +9,15 @@ from opencv_utils import BLUE, GREEN, RED, is_raspi, get_center
 def main():
     cam = camera.Camera()
 
+    bgr = [62, 54, 191]
     hsv_range = 20
-    bgr_color = [106, 87, 240]
 
-    bgr_img = np.uint8([[bgr_color]])
+    bgr_img = np.uint8([[bgr]])
     hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV)
     hsv_value = hsv_img[0, 0, 0]
 
-    lower = np.array([hsv_value - hsv_range, 100, 100])
-    upper = np.array([hsv_value + hsv_range, 255, 255])
+    lower = np.array([hsv_value - hsv_range, 100, 100], dtype="uint8")
+    upper = np.array([hsv_value + hsv_range, 255, 255], dtype="uint8")
 
     try:
         cnt = 0
@@ -32,6 +32,7 @@ def main():
 
             # Create mask
             in_range_mask = cv2.inRange(hsv_image, lower, upper)
+            # in_range_mask = cv2.inRange(hsv_image, minHSV, maxHSV)
 
             # Bitwise-AND mask and original image
             in_range_result = cv2.bitwise_and(image, image, mask=in_range_mask)
@@ -42,12 +43,19 @@ def main():
             # Get all contours
             contours, hierarchy = cv2.findContours(gs_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+            # Remove small contours
+            eligible = [c for c in contours if cv2.contourArea(c) >= 10]
+
             # Sort images
-            ordered = sorted(contours, key=lambda v: cv2.contourArea(v), reverse=True)
+            ordered = sorted(eligible, key=lambda c: cv2.contourArea(c), reverse=True)
+
+            text = 'Frame #: {}'.format(cnt)
 
             # Grab largest contour
             if len(ordered) > 0:
                 largest = ordered[0]
+
+                # Get bounding rectangle coordinates
                 x, y, w, h = cv2.boundingRect(largest)
 
                 # Draw a rectangle around contour
@@ -60,7 +68,11 @@ def main():
                 center_x, center_y = get_center(largest)
                 cv2.circle(image, (center_x, center_y), 4, RED, -1)
 
-            text = 'Frame #: {}'.format(cnt)
+                # Add centroid to image text
+                text = "{} ({}, {})".format(text, center_x, center_y)
+            else:
+                text = "{} (no match)".format(text)
+
             cv2.putText(img=image,
                         text=text,
                         org=(10, 25),
