@@ -14,6 +14,8 @@ class Camera:
                                    framerate=framerate).start()
             time.sleep(2.0)
         else:
+            # USB Camera
+            # self._vp = cv2.VideoCapture(1)
             self._vp = cv2.VideoCapture(0)
 
     def is_open(self):

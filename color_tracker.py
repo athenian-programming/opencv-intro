@@ -9,15 +9,26 @@ from opencv_utils import BLUE, GREEN, RED, is_raspi, get_center
 def main():
     cam = camera.Camera()
 
+    # Red iPhone
     bgr = [62, 54, 191]
+
+    # Blue tape
+    # bgr = [102, 38, 4]
+
+    # Orange
+    # bgr = [39, 75, 217]
+
+    # Yellow
+    # bgr = [85, 207, 228]
+
     hsv_range = 20
 
     bgr_img = np.uint8([[bgr]])
     hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV)
     hsv_value = hsv_img[0, 0, 0]
 
-    lower = np.array([hsv_value - hsv_range, 100, 100], dtype="uint8")
-    upper = np.array([hsv_value + hsv_range, 255, 255], dtype="uint8")
+    lower = np.array([hsv_value - hsv_range, 100, 100])
+    upper = np.array([hsv_value + hsv_range, 255, 255])
 
     try:
         cnt = 0
