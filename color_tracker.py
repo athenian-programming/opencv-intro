@@ -1,12 +1,19 @@
 import cv2
 import imutils
 import numpy as np
+from arc852.image_server import ImageServer
 
 import camera
 from opencv_utils import BLUE, GREEN, RED, is_raspi, get_center
 
 
 def main():
+    enable_http = False
+
+    if enable_http:
+        image_server = ImageServer("html/single-image.html", camera_name="Color Tracker")
+        image_server.start()
+
     cam = camera.Camera()
 
     # Red iPhone
@@ -99,6 +106,9 @@ def main():
             cv2.imshow('Result', in_range_result)
             cv2.imshow('Grayscale', gs_image)
 
+            if enable_http:
+                image_server.image = image
+
             key = cv2.waitKey(30) & 0xFF
 
             if key == ord('q'):
@@ -109,6 +119,8 @@ def main():
         cv2.destroyAllWindows()
         if cam.is_open():
             cam.close()
+        if enable_http:
+            image_server.stop()
 
 
 if __name__ == "__main__":
