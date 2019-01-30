@@ -1,13 +1,16 @@
+import time
+
 import cv2
 import imutils
 import numpy as np
-from arc852.image_server import ImageServer
+from arc852.process_image_server import ImageServer
 
 import camera
 from opencv_utils import BLUE, GREEN, RED, is_raspi, get_center
 
 
 def main():
+    pause_time = 1 / 30
     enable_http = False
 
     if enable_http:
@@ -99,20 +102,21 @@ def main():
                         color=RED,
                         thickness=2)
 
-            # Display images
-            cv2.imshow('Original', image)
-            cv2.imshow('HSV', hsv_image)
-            cv2.imshow('Mask', in_range_mask)
-            cv2.imshow('Result', in_range_result)
-            cv2.imshow('Grayscale', gs_image)
+            if not enable_http:
+                # Display images
+                cv2.imshow('Original', image)
+                cv2.imshow('HSV', hsv_image)
+                cv2.imshow('Mask', in_range_mask)
+                cv2.imshow('Result', in_range_result)
+                cv2.imshow('Grayscale', gs_image)
 
-            if enable_http:
+                key = cv2.waitKey(30) & 0xFF
+
+                if key == ord('q'):
+                    break
+            else:
                 image_server.image = image
-
-            key = cv2.waitKey(30) & 0xFF
-
-            if key == ord('q'):
-                break
+                time.sleep(pause_time)
 
             cnt += 1
     finally:
