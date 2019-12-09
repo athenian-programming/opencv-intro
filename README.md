@@ -2,7 +2,7 @@
 
 ## Setup
 Install [OpenCV](http://opencv.org) as described 
-[here](http://www.athenian-robotics.org/site/opencv/#installation).
+[here](https://www.athenian-robotics.org/opencv/).
 
 ## Exercises
 * [Filters](https://github.com/athenian-programming/opencv-intro/blob/master/filters.py) 
