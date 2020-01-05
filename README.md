@@ -1,5 +1,7 @@
 # OpenCV Intro
 
+*Warning* On OSX, you have to run these scripts using iTerm2 ([details here](https://github.com/opencv/opencv/issues/12763))
+
 ## Setup
 Install [OpenCV](http://opencv.org) as described 
 [here](https://www.athenian-robotics.org/opencv/).
